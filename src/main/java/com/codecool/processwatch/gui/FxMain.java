@@ -1,14 +1,20 @@
 package com.codecool.processwatch.gui;
 
+import com.codecool.processwatch.domain.Process;
+import com.codecool.processwatch.domain.ProcessWatchApp;
+import com.codecool.processwatch.queries.QueryByInput;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.stream.Stream;
+
 import static javafx.collections.FXCollections.observableArrayList;
 
 /**
@@ -57,14 +63,29 @@ public class FxMain extends Application {
         tableView.getColumns().add(argsColumn);
 
         var refreshButton = new Button("Refresh");
-        refreshButton.setOnAction(ignoreEvent -> System.out.println("Button pressed"));
+        refreshButton.setOnAction(actionEvent -> {
+            App newApp = new App(displayList);
+            newApp.refresh();
+        });
+
+        TextField inputBox = new TextField();
+        inputBox.setMaxWidth(150);
+
+        var filterButton = new Button("Filter");
+        filterButton.setOnAction(actionEvent -> {
+            QueryByInput filteredQuery = new QueryByInput(inputBox.getText());
+            app.setQuery(filteredQuery);
+            app.refresh();
+        });
 
         var box = new VBox();
-        var scene = new Scene(box, 640, 480);
-        var elements = box.getChildren();
-        elements.addAll(refreshButton,
-                        tableView);
+        var label = new Label("Filter by owner name or Parent ID");
 
+        var elements = box.getChildren();
+        elements.addAll(refreshButton, label, inputBox, filterButton,
+                tableView);
+
+        var scene = new Scene(box, 640, 480);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

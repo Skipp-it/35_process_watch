@@ -3,7 +3,7 @@ package com.codecool.processwatch.domain;
 import java.util.stream.Stream;
 
 /**
- * A query on the currentprocesses.
+ * A query on the current processes.
  * It can be used to filter them.
  */
 public interface Query {
