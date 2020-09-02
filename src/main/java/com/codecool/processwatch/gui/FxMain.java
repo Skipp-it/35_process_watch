@@ -13,9 +13,11 @@ import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static javafx.collections.FXCollections.observableArrayList;
+import static javafx.collections.FXCollections.sort;
 
 /**
  * The JavaFX application Window.
@@ -78,15 +80,27 @@ public class FxMain extends Application {
             app.refresh();
         });
 
+        var killButton = new Button("Kill process");
+        killButton.setOnAction(actionEvent -> {
+            tableView.getSelectionModel().getSelectedItems().forEach(p -> {
+                ProcessHandle.of(p.getPid()).ifPresent(s -> s.destroy());
+            });
+        });
+
+
         var box = new VBox();
         var label = new Label("Filter by owner name or Parent ID");
 
         var elements = box.getChildren();
         elements.addAll(refreshButton, label, inputBox, filterButton,
-                tableView);
+                tableView, killButton);
 
         var scene = new Scene(box, 640, 480);
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        tableView.getSelectionModel().setSelectionMode(
+                SelectionMode.MULTIPLE
+        );
     }
 }

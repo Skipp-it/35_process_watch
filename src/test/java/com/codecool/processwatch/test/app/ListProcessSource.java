@@ -16,7 +16,7 @@ public class ListProcessSource implements ProcessSource {
     }
 
     @Override
-    public Stream<Stream<ProcessHandle>> getProcesses() {
+    public Stream<Process> getProcesses() {
         return processes.stream();
     }
 }
