@@ -1,23 +1,21 @@
 package com.codecool.processwatch.gui;
 
-import com.codecool.processwatch.domain.Process;
-import com.codecool.processwatch.domain.ProcessWatchApp;
 import com.codecool.processwatch.queries.QueryByInput;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldListCell;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import static javafx.collections.FXCollections.observableArrayList;
-import static javafx.collections.FXCollections.sort;
+
 
 /**
  * The JavaFX application Window.
@@ -26,6 +24,7 @@ public class FxMain extends Application {
     private static final String TITLE = "Process Watch";
 
     private App app;
+
 
     /**
      * Entrypoint for the javafx:run maven task.
@@ -39,8 +38,11 @@ public class FxMain extends Application {
     /**
      * Build the application window and set up event handling.
      *
-     * @param primaryStage a stage created by the JavaFX runtime.
+     * @param stage a stage created by the JavaFX runtime.
      */
+
+
+
     public void start(Stage primaryStage) {
         primaryStage.setTitle(TITLE);
 
@@ -48,6 +50,10 @@ public class FxMain extends Application {
         app = new App(displayList);
         // TODO: Factor out the repetitive code
         var tableView = new TableView<ProcessView>(displayList);
+        tableView.getSelectionModel().setSelectionMode(
+                SelectionMode.MULTIPLE
+        );
+
         var pidColumn = new TableColumn<ProcessView, Long>("Process ID");
         pidColumn.setCellValueFactory(new PropertyValueFactory<ProcessView, Long>("pid"));
         var parentPidColumn = new TableColumn<ProcessView, Long>("Parent Process ID");
@@ -70,14 +76,97 @@ public class FxMain extends Application {
             newApp.refresh();
         });
 
+        var refreshBtnInfo = new ToggleButton("?");
+        refreshBtnInfo.setOnAction(actionEvent -> {
+
+            Text text = new Text("The Refresh Button reloads all active processes");
+
+
+            StackPane secondaryLayout = new StackPane();
+            secondaryLayout.getChildren().addAll(text);
+
+            Scene secondScene = new Scene(secondaryLayout, 300, 150);
+
+            // New window (Stage)
+            Stage newWindow = new Stage();
+            newWindow.setTitle("Info Refresh Button");
+            newWindow.setScene(secondScene);
+
+            // Specifies the modality for new window.
+            newWindow.initModality(Modality.WINDOW_MODAL);
+
+            // Specifies the owner Window (parent) for new window
+            newWindow.initOwner(primaryStage);
+
+            // Set position of second window, related to primary window.
+            newWindow.setX(primaryStage.getX() + 200);
+            newWindow.setY(primaryStage.getY() + 100);
+
+            newWindow.show();
+        });
+
+        var killBtnInfo = new Button("?");
+        killBtnInfo.setOnAction(actionEvent->{
+            Text text = new Text("The Kill Button kill's all selected processes");
+
+            StackPane secondaryLayout = new StackPane();
+            secondaryLayout.getChildren().addAll(text);
+
+            Scene secondScene = new Scene(secondaryLayout, 300, 150);
+
+            // New window (Stage)
+            Stage newWindow = new Stage();
+            newWindow.setTitle("Info Refresh Button");
+            newWindow.setScene(secondScene);
+
+            // Specifies the modality for new window.
+            newWindow.initModality(Modality.WINDOW_MODAL);
+
+            // Specifies the owner Window (parent) for new window
+            newWindow.initOwner(primaryStage);
+
+            // Set position of second window, related to primary window.
+            newWindow.setX(primaryStage.getX() + 200);
+            newWindow.setY(primaryStage.getY() + 100);
+
+            newWindow.show();
+        });
+
         TextField inputBox = new TextField();
-        inputBox.setMaxWidth(150);
+        inputBox.setMaxWidth(180);
 
         var filterButton = new Button("Filter");
         filterButton.setOnAction(actionEvent -> {
             QueryByInput filteredQuery = new QueryByInput(inputBox.getText());
             app.setQuery(filteredQuery);
             app.refresh();
+        });
+
+        var filterBtnInfo = new Button("?");
+        filterBtnInfo.setOnAction(actionEvent->{
+            Text text = new Text("You can filter processes either by entering the parent ID or by owner name");
+
+            StackPane secondaryLayout = new StackPane();
+            secondaryLayout.getChildren().addAll(text);
+
+            Scene secondScene = new Scene(secondaryLayout, 300, 150);
+
+            // New window (Stage)
+            Stage newWindow = new Stage();
+            newWindow.setTitle("Info Refresh Button");
+            newWindow.setScene(secondScene);
+
+            // Specifies the modality for new window.
+            newWindow.initModality(Modality.WINDOW_MODAL);
+
+            // Specifies the owner Window (parent) for new window
+            newWindow.initOwner(primaryStage);
+
+            // Set position of second window, related to primary window.
+            newWindow.setX(primaryStage.getX() + 200);
+            newWindow.setY(primaryStage.getY() + 100);
+
+            newWindow.show();
         });
 
         var killButton = new Button("Kill process");
@@ -87,20 +176,66 @@ public class FxMain extends Application {
             });
         });
 
-
         var box = new VBox();
         var label = new Label("Filter by owner name or Parent ID");
 
-        var elements = box.getChildren();
-        elements.addAll(refreshButton, label, inputBox, filterButton,
-                tableView, killButton);
+/**
+ refreshButton.setMinSize(Button.USE_PREF_SIZE, Button.USE_PREF_SIZE);
+ refreshBtnInfo.setMinSize(Button.USE_PREF_SIZE, Button.USE_PREF_SIZE);
+ **/
 
-        var scene = new Scene(box, 640, 480);
+        //Creating an Anchor Pane
+        AnchorPane anchorPane = new AnchorPane();
+
+        AnchorPane.setLeftAnchor(killButton, 10.0);
+        AnchorPane.setTopAnchor(killButton,10.0);
+        AnchorPane.setBottomAnchor(killButton,5.0);
+
+        AnchorPane.setLeftAnchor(killBtnInfo, 90.0);
+        AnchorPane.setTopAnchor(killBtnInfo,10.0);
+        AnchorPane.setBottomAnchor(killBtnInfo,5.0);
+
+        AnchorPane.setLeftAnchor(refreshButton, 400.0);
+        AnchorPane.setRightAnchor(refreshButton, 400.0);
+        AnchorPane.setTopAnchor(refreshButton,10.0);
+        AnchorPane.setBottomAnchor(refreshButton,5.0);
+
+        refreshButton.setMinSize(0, 10);
+        AnchorPane.setLeftAnchor(refreshButton, 400.0);
+        AnchorPane.setRightAnchor(refreshBtnInfo, 400.0);
+        AnchorPane.setTopAnchor(refreshBtnInfo,10.0);
+        AnchorPane.setBottomAnchor(refreshBtnInfo,5.0);
+
+        AnchorPane.setRightAnchor(filterButton, 194.0);
+        AnchorPane.setTopAnchor(filterButton,10.0);
+        AnchorPane.setBottomAnchor(filterButton,5.0);
+
+        AnchorPane.setRightAnchor(inputBox, 34.0);
+        AnchorPane.setTopAnchor(inputBox,10.0);
+        AnchorPane.setBottomAnchor(inputBox,5.0);
+
+        AnchorPane.setRightAnchor(filterBtnInfo, 10.0);
+        AnchorPane.setTopAnchor(filterBtnInfo,10.0);
+        AnchorPane.setBottomAnchor(filterBtnInfo,5.0);
+
+        ObservableList list = anchorPane.getChildren();
+
+        list.addAll(killButton,killBtnInfo, refreshButton, refreshBtnInfo, filterButton, inputBox, filterBtnInfo);
+
+        final Separator separator = new Separator();
+
+        var elements = box.getChildren();
+
+        elements.addAll(anchorPane);
+        box.setSpacing(5);
+        elements.addAll(separator);
+        box.setSpacing(5);
+        elements.addAll(tableView);
+
+        var scene = new Scene(box, 1024, 640);
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        tableView.getSelectionModel().setSelectionMode(
-                SelectionMode.MULTIPLE
-        );
+
     }
 }
