@@ -3,16 +3,23 @@ package com.codecool.processwatch.gui;
 import com.codecool.processwatch.queries.QueryByInput;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
+
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import static javafx.collections.FXCollections.observableArrayList;
 
@@ -38,12 +45,12 @@ public class FxMain extends Application {
     /**
      * Build the application window and set up event handling.
      *
-     * @param stage a stage created by the JavaFX runtime.
+     *
      */
 
 
 
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws FileNotFoundException {
         primaryStage.setTitle(TITLE);
 
         ObservableList<ProcessView> displayList = observableArrayList();
@@ -79,7 +86,8 @@ public class FxMain extends Application {
         var refreshBtnInfo = new ToggleButton("?");
         refreshBtnInfo.setOnAction(actionEvent -> {
 
-            Text text = new Text("The Refresh Button reloads all active processes");
+            Label text = new Label("The Refresh Button reloads all active processes");
+            text.setWrapText(true);
 
 
             StackPane secondaryLayout = new StackPane();
@@ -99,7 +107,7 @@ public class FxMain extends Application {
             newWindow.initOwner(primaryStage);
 
             // Set position of second window, related to primary window.
-            newWindow.setX(primaryStage.getX() + 200);
+            newWindow.setX(primaryStage.getX() + 400);
             newWindow.setY(primaryStage.getY() + 100);
 
             newWindow.show();
@@ -107,7 +115,9 @@ public class FxMain extends Application {
 
         var killBtnInfo = new Button("?");
         killBtnInfo.setOnAction(actionEvent->{
-            Text text = new Text("The Kill Button kill's all selected processes");
+
+            Label text = new Label("The Kill Button kill's all selected processes");
+            text.setWrapText(true);
 
             StackPane secondaryLayout = new StackPane();
             secondaryLayout.getChildren().addAll(text);
@@ -144,7 +154,9 @@ public class FxMain extends Application {
 
         var filterBtnInfo = new Button("?");
         filterBtnInfo.setOnAction(actionEvent->{
-            Text text = new Text("You can filter processes either by entering the parent ID or by owner name");
+
+            Label text = new Label("You can filter processes either by entering the parent ID or by owner name");
+            text.setWrapText(true);
 
             StackPane secondaryLayout = new StackPane();
             secondaryLayout.getChildren().addAll(text);
@@ -163,7 +175,7 @@ public class FxMain extends Application {
             newWindow.initOwner(primaryStage);
 
             // Set position of second window, related to primary window.
-            newWindow.setX(primaryStage.getX() + 200);
+            newWindow.setX(primaryStage.getX() + 700);
             newWindow.setY(primaryStage.getY() + 100);
 
             newWindow.show();
@@ -176,7 +188,49 @@ public class FxMain extends Application {
             });
         });
 
+        FileInputStream inputStream = new FileInputStream("images/about.png");
+        Image img = new Image(inputStream,20,20,false,false);
+        ImageView imgView = new ImageView(img);
+        imgView.setPreserveRatio(true);
+
+        Button aboutBtn = new Button();
+        aboutBtn.setGraphic(imgView);
+        aboutBtn.setStyle("-fx-background-size: inherit");
+
+
+
+
+        aboutBtn.setOnAction(actionEvent->{
+
+            Label text = new Label("Application shows all processes from computer");
+            text.setWrapText(true);
+
+
+            StackPane secondaryLayout = new StackPane();
+            secondaryLayout.getChildren().addAll(text);
+
+            Scene secondScene = new Scene(secondaryLayout, 300, 150);
+
+            // New window (Stage)
+            Stage newWindow = new Stage();
+            newWindow.setTitle("About application");
+            newWindow.setScene(secondScene);
+
+            // Specifies the modality for new window.
+            newWindow.initModality(Modality.WINDOW_MODAL);
+
+            // Specifies the owner Window (parent) for new window
+            newWindow.initOwner(primaryStage);
+
+            // Set position of second window, related to primary window.
+            newWindow.setX(primaryStage.getX() + 200);
+            newWindow.setY(primaryStage.getY() + 100);
+
+            newWindow.show();
+        });
+
         var box = new VBox();
+
         var label = new Label("Filter by owner name or Parent ID");
 
 /**
@@ -194,6 +248,10 @@ public class FxMain extends Application {
         AnchorPane.setLeftAnchor(killBtnInfo, 90.0);
         AnchorPane.setTopAnchor(killBtnInfo,10.0);
         AnchorPane.setBottomAnchor(killBtnInfo,5.0);
+
+        AnchorPane.setLeftAnchor(aboutBtn, 230.0);
+        AnchorPane.setTopAnchor(aboutBtn,10.0);
+        AnchorPane.setBottomAnchor(aboutBtn,5.0);
 
         AnchorPane.setLeftAnchor(refreshButton, 400.0);
         AnchorPane.setRightAnchor(refreshButton, 400.0);
@@ -220,9 +278,10 @@ public class FxMain extends Application {
 
         ObservableList list = anchorPane.getChildren();
 
-        list.addAll(killButton,killBtnInfo, refreshButton, refreshBtnInfo, filterButton, inputBox, filterBtnInfo);
+        list.addAll(killButton, killBtnInfo, aboutBtn, refreshButton, refreshBtnInfo, filterButton, inputBox, filterBtnInfo);
 
         final Separator separator = new Separator();
+        final Separator separator2 = new Separator();
 
         var elements = box.getChildren();
 
@@ -231,8 +290,11 @@ public class FxMain extends Application {
         elements.addAll(separator);
         box.setSpacing(5);
         elements.addAll(tableView);
+        box.setSpacing(5);
+        elements.addAll(separator2);
+        box.setSpacing(5);
 
-        var scene = new Scene(box, 1024, 640);
+        var scene = new Scene(box, 1024, 640, Color.AQUAMARINE);
         primaryStage.setScene(scene);
         primaryStage.show();
 
