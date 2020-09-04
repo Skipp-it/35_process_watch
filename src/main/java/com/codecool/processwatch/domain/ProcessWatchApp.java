@@ -46,4 +46,8 @@ public class ProcessWatchApp {
         this.actualQuery = query;
         refresh();
     }
+
+    public final void killProcess(long processId) {
+        this.processSource.killProcess(processId);
+    }
 }

@@ -37,6 +37,10 @@ public class OsProcessSource implements ProcessSource {
         ));
     }
 
-        return processes.stream();
+    @Override
+    public void killProcess(long processId) {
+        ProcessHandle
+            .of(processId)
+            .ifPresent(s -> s.destroy());
     }
 }
