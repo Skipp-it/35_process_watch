@@ -21,30 +21,6 @@ public class QueryByInput implements Query {
 
     @Override
     public Stream<Process> run(Stream<Process> input) {
-
-        ArrayList filteredStream = new ArrayList();
-
-//        input.forEach(process -> {
-//            try {
-//                if (Integer.parseInt(textToFilter) == process.getParentPid()) {
-//                    filteredStream.add(new Process(
-//                            process.getPid(),
-//                            process.getParentPid(),
-//                            new User(process.getUserName()),
-//                            process.getName(),
-//                            process.getArgs()));
-//                }}
-//            catch (NumberFormatException e) {
-//                if (textToFilter.equals(process.getUserName())) {
-//                    filteredStream.add(new Process(
-//                            process.getPid(),
-//                            process.getParentPid(),
-//                            new User(process.getUserName()),
-//                            process.getName(),
-//                            process.getArgs()));
-//                }
-//            }
-//        });
         return input.filter(process -> {
                 try {
                     if (Integer.parseInt(textToFilter) == process.getParentPid()) {
@@ -57,39 +33,5 @@ public class QueryByInput implements Query {
                 }
                 return false;
         });
-//        return filteredStream.stream();
     }
 }
-
-/**
- * This is the identity query.  It selects everything from its source.
- * public class SelectAll implements Query {
- * <p>
- * {@inheritDoc}
- *
- * @Override public Stream<Process> run(Stream<Process> input) {
- * return input;
- * }
- **/
-
-
-//@Override
-//public Stream<Process> run(Stream<Process> input) {
-//    OsProcessSource allProcesesObj = new OsProcessSource();
-//
-//    ArrayList filteredStream = new ArrayList();
-//    input= allProcesesObj.getProcesses();
-//
-//    input.forEach(process -> {
-//        if (textToFilter.equals(process.getName())) {
-//            filteredStream.add(new Process(
-//                    process.getPid(),
-//                    process.getParentPid(),
-//                    new User(process.getName()),
-//                    process.getUserName(),
-//                    process.getArgs()));
-//        }
-//    });
-//    return filteredStream.stream();
-//}
-//}

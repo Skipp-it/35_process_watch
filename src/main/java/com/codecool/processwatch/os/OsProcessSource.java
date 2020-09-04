@@ -24,23 +24,23 @@ public class OsProcessSource implements ProcessSource {
 
     @Override
     public Stream<Process> getProcesses() {
+        return ProcessHandle.allProcesses().map(p -> new Process(
+                p.pid(),
+                Integer.parseInt(p.parent().map(ProcessHandle::pid).map(Objects::toString).orElse("0")),
+                new User(p.info().user().orElse("Not Available")),
+                p.info().command()
+                        .map(Object::toString)
+                        .map(s -> s.split("/"))
+                        .map(a -> a[a.length-1])
+                        .orElse("not available"),
+                new String[]{Arrays.toString(p.info().arguments().orElse(new String[]{}))}
+        ));
+    }
 
-        ArrayList<Process> processes = new ArrayList<>();
-
-        ProcessHandle.allProcesses().forEach(p -> {
-            processes.add(new Process(
-                    p.pid(),
-                    Integer.parseInt(p.parent().map(ProcessHandle::pid).map(Objects::toString).orElse("0")),
-                    new User(p.info().user().get()),
-                    p.info().command()
-                            .map(Object::toString)
-                            .map(s -> s.split("/"))
-                            .map(a -> a[a.length-1])
-                            .orElse("not available"),
-                    new String[]{Arrays.toString(p.info().arguments().orElse(new String[]{}))}
-            ));
-        });
-
-        return processes.stream();
+    @Override
+    public void killProcess(long processId) {
+        ProcessHandle
+            .of(processId)
+            .ifPresent(s -> s.destroy());
     }
 }

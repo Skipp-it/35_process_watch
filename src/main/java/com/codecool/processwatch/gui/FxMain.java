@@ -184,7 +184,7 @@ public class FxMain extends Application {
         var killButton = new Button("Kill process");
         killButton.setOnAction(actionEvent -> {
             tableView.getSelectionModel().getSelectedItems().forEach(p -> {
-                ProcessHandle.of(p.getPid()).ifPresent(s -> s.destroy());
+                app.killProcess(p.getPid());
             });
         });
 
